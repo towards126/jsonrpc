@@ -4,57 +4,23 @@
 
 using namespace std;
 
-// 定义一些 RPC 方法
-Json::Value addMethod(const Json::Value &params) {
-    return params[0].asInt() + params[1].asInt();
-}
-
-Json::Value subtractMethod(const Json::Value &params) {
-    return params[0].asInt() - params[1].asInt();
-}
-
-Json::Value foo_3(const Json::Value &params) {
-    return Json::Value{};
+int add(int a,int b,int c){
+    return a+b;
 }
 
 int main() {
-    // 创建服务端并注册方法
     JsonRpcServer server;
-    server.registerMethod("add", addMethod);
-    server.registerMethod("subtract", subtractMethod);
-    server.registerMethod("mul", function<Json::Value(Json::Value)>(foo_3));
 
-    // 模拟客户端发送请求
-    JsonRpcClient client;
-    Json::Value iNum;
-    iNum[0] = 10;
-    iNum[1] = 5;
-    iNum[2]="t";
-    std::string request = client.sendRequest("mul", iNum);
+// 注册具有不同参数的函数
+    server.registerMethod("add", add);
 
-    cout<<request<<endl;
-    // 服务端处理请求
-    std::string response = server.handleRequest(request);
+    std::string requestAdd = R"({"jsonrpc": "2.0", "method": "add", "params": [3, 4], "id": 1})";
+    std::string responseAdd = server.handleRequest(requestAdd);
+    std::cout << "Response: " << responseAdd << std::endl;
 
-    // 客户端解析响应
-    try {
-        Json::Value result = client.parseResponse(response);
-        std::cout << "Result: " << result.asInt() << std::endl;
-    } catch (const std::exception &e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
-    request = client.sendRequest("subtract", iNum);
+    std::string requestConcat = R"({"jsonrpc": "2.0", "method": "concat", "params": ["Hello, ", "world!"], "id": 2})";
+    std::string responseConcat = server.handleRequest(requestConcat);
+    std::cout << "Response: " << responseConcat << std::endl;
 
-    cout<<request<<endl;
-    // 服务端处理请求
-    response = server.handleRequest(request);
-
-    // 客户端解析响应
-    try {
-        Json::Value result = client.parseResponse(response);
-        std::cout << "Result: " << result.asInt() << std::endl;
-    } catch (const std::exception &e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-    }
     return 0;
 }
