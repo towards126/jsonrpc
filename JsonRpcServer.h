@@ -37,7 +37,7 @@ struct function_traits<R(Args...)> {
     using return_type = R;
 
     template<std::size_t N>
-    using arg = typename std::tuple_element<N, std::tuple<Args...>>::type;
+    using arg = typename std::tuple_element_t<N, std::tuple<Args...>>;
 
     static constexpr std::size_t arity = sizeof...(Args);
 };
@@ -58,8 +58,6 @@ auto invokeWithTuple(Func func, const Tuple& params, std::index_sequence<Is...>)
     return func(std::get<Is>(params)...);
 }
 
-#include <tuple>
-#include <utility> // for std::index_sequence
 
 // 用于从 Json::Value 中提取参数，并将其传递给函数
 template<typename Func, typename... Args, std::size_t... Is>
@@ -74,7 +72,11 @@ auto invokeWithJson(Func func, const Json::Value& params) {
     // std::index_sequence_for 自动生成索引序列
     return invokeWithJsonImpl<Func, Args...>(func, params, std::index_sequence_for<Args...>{});
 }
-
+template<typename Func, std::size_t... Is>
+auto invoke(Func func, const Json::Value& params,std::index_sequence<Is...>){
+    using traits = function_traits<Func>;
+    return invokeWithJson<Func,typename traits::template arg<Is>...>(func, params);
+}
 
 
 class JsonRpcServer {
@@ -92,7 +94,9 @@ public:
                 throw std::runtime_error("Incorrect number of arguments");
             }
 
-            return invokeWithJson<Func, typename traits::template arg<0>, typename traits::template arg<1> /*...更多参数*/>(func, params);
+            //return invokeWithJson<Func, typename traits::template arg<0>, typename traits::template arg<1> /*...更多参数*/>(func, params);
+            return invoke<Func>(func, params,std::make_index_sequence<traits::arity>{});
+
         };
 
         methods[method] = wrapper;

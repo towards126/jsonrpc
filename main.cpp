@@ -5,7 +5,7 @@
 using namespace std;
 
 int add(int a,int b,int c){
-    return a+b;
+    return a+b+c;
 }
 
 int main() {
@@ -14,7 +14,7 @@ int main() {
 // 注册具有不同参数的函数
     server.registerMethod("add", add);
 
-    std::string requestAdd = R"({"jsonrpc": "2.0", "method": "add", "params": [3, 4], "id": 1})";
+    std::string requestAdd = R"({"jsonrpc": "2.0", "method": "add", "params": [3, 4,5], "id": 1})";
     std::string responseAdd = server.handleRequest(requestAdd);
     std::cout << "Response: " << responseAdd << std::endl;
 
