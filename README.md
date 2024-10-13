@@ -14,13 +14,15 @@
 注册方法
 服务器允许你注册可以通过 JSON-RPC 调用的函数。以下是如何注册方法的示例：
 
-普通函数：
-、、、
+    
+
+* 普通函数：
+```C++
 JsonRpcServer server;
 server.registerMethod("add", [](int a, int b) {
     return a + b;
 });
-、、、
+```
 成员函数：
 
 struct Calculator {
