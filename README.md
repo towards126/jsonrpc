@@ -23,8 +23,8 @@ server.registerMethod("add", [](int a, int b) {
     return a + b;
 });
 ```
-成员函数：
-
+* 成员函数：
+```C++
 struct Calculator {
     int add(int a, int b) {
         return a + b;
@@ -33,31 +33,36 @@ struct Calculator {
 
 Calculator calc;
 server.registerMethod("add", &Calculator::add, &calc);
-权限控制：
+```
+* 权限控制：
 你可以通过指定权限来限制方法的访问：
-
+```C++
 server.registerMethod("secureAdd", [](int a, int b) {
     return a + b;
 }, false, "admin");
-运行服务器
+```
+* 运行服务器
 设置好方法和 ZeroMQ 套接字后，可以通过调用 run() 方法来运行服务器：
-
+```C++
 int main() {
     JsonRpcServer server;
     server.as_server(5555);  // 在端口 5555 上启动服务器
     server.run();
 }
-发送请求
+```
+* 发送请求
 服务器运行后，可以发送 JSON-RPC 请求。以下是一个同步请求的示例：
-
+```
 {
   "jsonrpc": "2.0",
   "method": "add",
   "params": [5, 7],
   "id": 1
 }
-异步请求示例：
+```
 
+*异步请求示例：
+```
 {
   "jsonrpc": "2.0",
   "method": "secureAdd",
@@ -66,12 +71,14 @@ int main() {
   "async": true,
   "userPermission": "admin"
 }
-获取异步结果
+```
+*获取异步结果
 对于异步方法，可以稍后通过以下请求获取结果：
-
+```
 {
   "jsonrpc": "2.0",
   "method": "getAsyncResult",
   "params": [2],
   "id": 3
 }
+```
