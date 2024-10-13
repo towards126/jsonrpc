@@ -21,12 +21,13 @@ T fromJson(const Json::Value& value) {
 
 class JsonRpcProtocol {
 public:
-    static Json::Value createRequest(const std::string& method, const Json::Value& params, int id) {
+    static Json::Value createRequest(const std::string& method, const Json::Value& params, int id,bool async) {
         Json::Value request;
         request["jsonrpc"] = "2.0";
         request["method"] = method;
         request["params"] = params;
         request["id"] = id;
+        request["async"]=async;
         return request;
     }
 

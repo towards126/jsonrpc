@@ -3,6 +3,7 @@ project(jsonrpc)
 
 set(CMAKE_CXX_STANDARD 20)
 find_package(jsoncpp CONFIG REQUIRED)
+find_package(cppzmq REQUIRED)
 add_executable(jsonrpc main.cpp
         JsonRpcProtocol.h
         JsonRpcServer.h
@@ -14,4 +15,4 @@ add_executable(jsonrpc main.cpp
         log/buffer.cpp
 
 )
-target_link_libraries(jsonrpc PRIVATE jsoncpp_lib)
+target_link_libraries(jsonrpc PRIVATE jsoncpp_lib libzmq)
